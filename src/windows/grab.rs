@@ -25,10 +25,16 @@ unsafe extern "system" fn raw_callback(code: i32, param: usize, lpdata: isize) -
         if let Some(event_type) = opt {
             let unicode = if GET_KEY_UNICODE {
                 match &event_type {
-                    EventType::KeyPress(_key) => match (*KEYBOARD).lock() {
-                        Ok(mut keyboard) => keyboard.get_unicode(lpdata),
-                        Err(_) => None,
-                    },
+                    EventType::KeyPress(key) => {
+                        if key.is_alpha() {
+                            match (*KEYBOARD).lock() {
+                                Ok(mut keyboard) => keyboard.get_unicode(lpdata),
+                                Err(_) => None,
+                            }
+                        } else {
+                            None
+                        }
+                    }
                     _ => None,
                 }
             } else {

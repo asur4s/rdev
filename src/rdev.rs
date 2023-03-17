@@ -264,6 +264,65 @@ pub enum Key {
     RawKey(RawKey),
 }
 
+impl Key {
+    /// refs: https://www.w3.org/TR/uievents-code/#key-alphanumeric-writing-system
+    pub fn is_alpha(&self) -> bool {
+        matches!(
+            self,
+            Key::BackQuote
+                | Key::Num1
+                | Key::Num2
+                | Key::Num3
+                | Key::Num4
+                | Key::Num5
+                | Key::Num6
+                | Key::Num7
+                | Key::Num8
+                | Key::Num9
+                | Key::Num0
+                | Key::Minus
+                | Key::Equal
+                | Key::IntlYen
+                | Key::KeyQ
+                | Key::KeyW
+                | Key::KeyE
+                | Key::KeyR
+                | Key::KeyT
+                | Key::KeyY
+                | Key::KeyU
+                | Key::KeyI
+                | Key::KeyO
+                | Key::KeyP
+                | Key::LeftBracket
+                | Key::RightBracket
+                | Key::BackSlash
+                | Key::KeyA
+                | Key::KeyS
+                | Key::KeyD
+                | Key::KeyF
+                | Key::KeyG
+                | Key::KeyH
+                | Key::KeyJ
+                | Key::KeyK
+                | Key::KeyL
+                | Key::SemiColon
+                | Key::Quote
+                | Key::IntlBackslash
+                | Key::KeyZ
+                | Key::KeyX
+                | Key::KeyC
+                | Key::KeyV
+                | Key::KeyB
+                | Key::KeyN
+                | Key::KeyM
+                | Key::Comma
+                | Key::Dot
+                | Key::Slash
+                | Key::IntlRo
+        )
+    }
+}
+
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, EnumIter)]
 #[cfg_attr(feature = "serialize", derive(Serialize, Deserialize))]
 pub enum RawKey {
