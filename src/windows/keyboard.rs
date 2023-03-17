@@ -286,6 +286,25 @@ impl Keyboard {
         }
         self.last_is_dead = is_dead;
 
+        if len == 1 {
+            let chr = String::from_utf16(&buff[..len as usize])
+                .ok()?
+                .chars()
+                .next()?;
+
+            if chr.is_control() {
+                return Some(UnicodeInfo {
+                    name: Some(normalize_ctrl(chr).to_string()),
+                    unicode: buff[..len as usize].to_vec(),
+                    is_dead: false,
+                });
+            }
+            
+            if matches!(chr, '\u{1}'..='\u{1f}') {
+                return None;
+            }
+        }
+
         // C0 controls
         if len == 1
             && matches!(
@@ -371,4 +390,19 @@ impl KeyboardState for Keyboard {
             _ => None,
         }
     }
+}
+
+fn normalize_ctrl(chr: char) -> char {
+    if (chr as u32) < 0x20 {
+        let de_ctrl = ((chr as u8) | 0x40) as char;
+        de_ctrl.to_ascii_lowercase()
+    } else {
+        chr
+    }
+}
+
+#[test]
+fn test_normalize_ctrl() {
+    let chr = '\u{3}';
+    assert_eq!(normalize_ctrl(chr), 'c');
 }
