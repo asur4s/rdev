@@ -62,6 +62,20 @@ fn sim_mouse_event(flags: DWORD, data: DWORD, dx: LONG, dy: LONG) -> Result<(), 
 }
 
 fn sim_keyboard_event(flags: DWORD, vk: WORD, scan: WORD) -> Result<(), SimulateError> {
+    let flags = match vk as _ {
+        winapi::um::winuser::VK_HOME |
+        winapi::um::winuser::VK_UP |
+        winapi::um::winuser::VK_PRIOR |
+        winapi::um::winuser::VK_LEFT |
+        winapi::um::winuser::VK_RIGHT |
+        winapi::um::winuser::VK_END |
+        winapi::um::winuser::VK_DOWN |
+        winapi::um::winuser::VK_NEXT |
+        winapi::um::winuser::VK_INSERT | 
+        winapi::um::winuser::VK_DELETE => flags | winapi::um::winuser::KEYEVENTF_EXTENDEDKEY,
+        _ => flags,
+    };
+
     let mut union: INPUT_u = unsafe { std::mem::zeroed() };
     let inner_union = unsafe { union.ki_mut() };
     unsafe {
